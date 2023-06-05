@@ -35,15 +35,15 @@
 
 - name: gather facts and prepare system for cephadm
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
-    - "{{ nfs_group_name|default('nfss') }}"
-    - "{{ iscsi_gw_group_name|default('iscsigws') }}"
-    - "{{ monitoring_group_name|default('monitoring') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - mgrs
+    - rbdmirrors
+    - nfss
+    - iscsigw
+    - monitoring
   become: true
   any_errors_fatal: True
   gather_facts: false
@@ -447,7 +447,7 @@
 
 
 - name: store existing rbd mirror peers in monitor config store
-  hosts: "{{ rbdmirror_group_name|default('rbdmirrors') }}"
+  hosts: rbdmirrors
   become: true
   any_errors_fatal: true
   gather_facts: true
@@ -548,7 +548,7 @@
 
 
 - name: adopt ceph mon daemons
-  hosts: "{{ mon_group_name|default('mons') }}"
+  hosts: mons
   serial: 1
   become: true
   gather_facts: false
@@ -593,7 +593,7 @@
         CEPHADM_IMAGE: '{{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'
 
 - name: adopt ceph mgr daemons
-  hosts: "{{ groups[mgr_group_name] | default(groups[mon_group_name]) }}"
+  hosts: "{{ groups['mgrs'] | default(groups['mons']) }}"
   serial: 1
   become: true
   gather_facts: false
@@ -628,7 +628,7 @@
 
 
 - name: stop and remove legacy iscsigw daemons
-  hosts: "{{ iscsi_gw_group_name|default('iscsigws') }}"
+  hosts: iscsigws
   serial: 1
   become: true
   gather_facts: false
@@ -670,7 +670,7 @@
 
 
 - name: redeploy iscsigw daemons
-  hosts: "{{ iscsi_gw_group_name|default('iscsigws') }}"
+  hosts: iscsigws
   become: true
   gather_facts: false
   any_errors_fatal: True
@@ -688,7 +688,7 @@
 
 
 - name: set osd flags
-  hosts: "{{ osd_group_name|default('osds') }}"
+  hosts: osds
   become: true
   gather_facts: false
   any_errors_fatal: True
@@ -755,7 +755,7 @@
         CEPH_CONTAINER_BINARY: "{{ container_binary }}"
 
 - name: adopt ceph osd daemons
-  hosts: "{{ osd_group_name|default('osd') }}"
+  hosts: osds
   serial: 1
   become: true
   gather_facts: false
@@ -844,7 +844,7 @@
         CEPHADM_IMAGE: '{{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'
 
 - name: unset osd flags
-  hosts: "{{ osd_group_name|default('osds') }}"
+  hosts: osds
   become: true
   gather_facts: false
   any_errors_fatal: True
@@ -889,7 +889,7 @@
       when: (balancer_status_adopt.stdout | from_json)['active'] | bool
 
 - name: redeploy mds daemons
-  hosts: "{{ mds_group_name|default('mdss') }}"
+  hosts: mdss
   become: true
   gather_facts: false
   any_errors_fatal: True
@@ -906,7 +906,7 @@
         CEPHADM_IMAGE: '{{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'
 
 - name: stop and remove legacy ceph mds daemons
-  hosts: "{{ mds_group_name|default('mdss') }}"
+  hosts: mdss
   serial: 1
   become: true
   gather_facts: false
@@ -950,7 +950,7 @@
         state: absent
 
 - name: redeploy rgw daemons
-  hosts: "{{ rgw_group_name | default('rgws') }}"
+  hosts: rgws
   become: true
   gather_facts: false
   any_errors_fatal: True
@@ -1026,7 +1026,7 @@
         CEPHADM_IMAGE: '{{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'
 
 - name: stop and remove legacy ceph rgw daemons
-  hosts: "{{ rgw_group_name|default('rgws') }}"
+  hosts: rgws
   serial: 1
   become: true
   gather_facts: false
@@ -1082,7 +1082,7 @@
         state: absent
 
 - name: stop and remove legacy ceph nfs daemons
-  hosts: "{{ nfs_group_name|default('nfss') }}"
+  hosts: nfss
   tags: 'ceph_nfs_adopt'
   serial: 1
   become: true
@@ -1156,7 +1156,7 @@
       when: nfs_obj_gw | bool
 
 - name: redeploy rbd-mirror daemons
-  hosts: "{{ rbdmirror_group_name|default('rbdmirrors') }}"
+  hosts: rbdmirrors
   become: true
   gather_facts: false
   any_errors_fatal: True
@@ -1173,7 +1173,7 @@
         CEPHADM_IMAGE: '{{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'
 
 - name: stop and remove legacy rbd-mirror daemons
-  hosts: "{{ rbdmirror_group_name|default('rbdmirrors') }}"
+  hosts: rbdmirrors
   serial: 1
   become: true
   gather_facts: false
@@ -1214,12 +1214,12 @@
 
 - name: redeploy ceph-crash daemons
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - mgrs
+    - rbdmirrors
   become: true
   gather_facts: false
   any_errors_fatal: True
@@ -1249,7 +1249,7 @@
 
 
 - name: redeploy alertmanager/grafana/prometheus daemons
-  hosts: "{{ monitoring_group_name|default('monitoring') }}"
+  hosts: monitoring
   serial: 1
   become: true
   gather_facts: false
@@ -1417,15 +1417,15 @@
 
 - name: redeploy node-exporter daemons
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
-    - "{{ nfs_group_name|default('nfss') }}"
-    - "{{ iscsi_gw_group_name|default('iscsigws') }}"
-    - "{{ monitoring_group_name|default('monitoring') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - mgrs
+    - rbdmirrors
+    - nfss
+    - iscsigws
+    - monitoring
   become: true
   gather_facts: false
   any_errors_fatal: True
@@ -1458,7 +1458,7 @@
 
 
 - name: adjust placement daemons
-  hosts: "{{ mon_group_name|default('mons') }}[0]"
+  hosts: mons[0]
   become: true
   gather_facts: false
   any_errors_fatal: True
@@ -1508,7 +1508,7 @@
             CEPHADM_IMAGE: '{{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'
 
 - name: show ceph orchestrator status
-  hosts: "{{ mon_group_name|default('mons') }}[0]"
+  hosts: mons[0]
   become: true
   gather_facts: false
   any_errors_fatal: True

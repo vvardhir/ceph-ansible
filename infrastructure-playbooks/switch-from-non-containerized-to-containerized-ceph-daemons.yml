@@ -36,13 +36,13 @@
 - name: gather facts
 
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
-    - "{{ nfs_group_name|default('nfss') }}"
+    - mons
+    - mgrs
+    - osds
+    - mdss
+    - rgws
+    - rbdmirrors
+    - nfss
 
   become: true
 
@@ -76,7 +76,7 @@
     containerized_deployment: true
     switch_to_containers: True
     mon_group_name:       mons
-  hosts: "{{ mon_group_name|default('mons') }}"
+  hosts: mons
   serial: 1
   become: true
   pre_tasks:
@@ -157,7 +157,7 @@
 
 - name: switching from non-containerized to containerized ceph mgr
 
-  hosts: "{{ mgr_group_name|default('mgrs') }}"
+  hosts: mgrs
 
   vars:
     containerized_deployment: true
@@ -214,7 +214,7 @@
 
 
 - name: set osd flags
-  hosts: "{{ mon_group_name | default('mons') }}[0]"
+  hosts: mons[0]
   become: True
   tasks:
     - import_role:
@@ -277,7 +277,7 @@
     osd_group_name: osds
     switch_to_containers: True
 
-  hosts: "{{ osd_group_name|default('osds') }}"
+  hosts: osds
 
   serial: 1
   become: true
@@ -400,7 +400,7 @@
 
 
 - name: unset osd flags
-  hosts: "{{ mon_group_name | default('mons') }}[0]"
+  hosts: mons[0]
   become: True
   tasks:
     - import_role:
@@ -442,7 +442,7 @@
 
 - name: switching from non-containerized to containerized ceph mds
 
-  hosts: "{{ mds_group_name|default('mdss') }}"
+  hosts: mdss
 
   vars:
     containerized_deployment: true
@@ -497,7 +497,7 @@
 
 - name: switching from non-containerized to containerized ceph rgw
 
-  hosts: "{{ rgw_group_name|default('rgws') }}"
+  hosts: rgws
 
   vars:
     containerized_deployment: true
@@ -556,7 +556,7 @@
 
 - name: switching from non-containerized to containerized ceph rbd-mirror
 
-  hosts: "{{ rbdmirror_group_name|default('rbdmirrors') }}"
+  hosts: rbdmirrors
 
   vars:
     containerized_deployment: true
@@ -617,7 +617,7 @@
 
 - name: switching from non-containerized to containerized ceph nfs
 
-  hosts: "{{ nfs_group_name|default('nfss') }}"
+  hosts: nfss
 
   vars:
     containerized_deployment: true
@@ -664,7 +664,7 @@
         name: ceph-nfs
 
 - name: switching from non-containerized to containerized iscsigws
-  hosts: "{{ iscsi_gw_group_name|default('iscsigws') }}"
+  hosts: iscsigws
   vars:
     containerized_deployment: true
     iscsi_gw_group_name: iscsigws
@@ -718,12 +718,12 @@
 - name: switching from non-containerized to containerized ceph-crash
 
   hosts:
-    - "{{ mon_group_name | default('mons') }}"
-    - "{{ osd_group_name | default('osds') }}"
-    - "{{ mds_group_name | default('mdss') }}"
-    - "{{ rgw_group_name | default('rgws') }}"
-    - "{{ rbdmirror_group_name | default('rbdmirrors') }}"
-    - "{{ mgr_group_name | default('mgrs') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - rbdmirrors
+    - mgrs
 
   vars:
     containerized_deployment: true
@@ -750,11 +750,11 @@
 
 - name: final task
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
+    - mons
+    - mgrs
+    - osds
+    - mdss
+    - rgws
   vars:
     containerized_deployment: true
   become: true

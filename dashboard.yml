@@ -1,14 +1,14 @@
 ---
 - hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
-    - "{{ nfs_group_name|default('nfss') }}"
-    - "{{ iscsi_gw_group_name|default('iscsigws') }}"
-    - "{{ monitoring_group_name|default('monitoring') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - mgrs
+    - rbdmirrors
+    - nfss
+    - iscsigws
+    - monitoring
   gather_facts: false
   become: true
   pre_tasks:
@@ -48,7 +48,7 @@
             status: "Complete"
             end: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
 
-- hosts: "{{ monitoring_group_name | default('monitoring') }}"
+- hosts: monitoring
   gather_facts: false
   become: true
   pre_tasks:
@@ -88,7 +88,7 @@
 
 # using groups[] here otherwise it can't fallback to the mon if there's no mgr group.
 # adding an additional | default(omit) in case where no monitors are present (external ceph cluster)
-- hosts: "{{ groups[mgr_group_name|default('mgrs')] | default(groups[mon_group_name|default('mons')]) | default(omit) }}"
+- hosts: "{{ groups['mgrs'] | default(groups['mons']) | default(omit) }}"
   gather_facts: false
   become: true
   pre_tasks:

@@ -1,15 +1,15 @@
 ---
 - name: gather facts and prepare system for cephadm
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
-    - "{{ nfs_group_name|default('nfss') }}"
-    - "{{ iscsi_gw_group_name|default('iscsigws') }}"
-    - "{{ monitoring_group_name|default('monitoring') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - mgrs
+    - rbdmirrors
+    - nfss
+    - iscsigws
+    - monitoring
   become: true
   gather_facts: false
   vars:
@@ -134,7 +134,7 @@
         cephadm_cmd: "cephadm {{ '--docker' if container_binary == 'docker' else '' }}"
 
 - name: bootstrap the cluster
-  hosts: "{{ mon_group_name|default('mons') }}[0]"
+  hosts: mons[0]
   become: true
   gather_facts: false
   tasks:
@@ -205,15 +205,15 @@
 
 - name: add the other nodes
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
-    - "{{ nfs_group_name|default('nfss') }}"
-    - "{{ iscsi_gw_group_name|default('iscsigws') }}"
-    - "{{ monitoring_group_name|default('monitoring') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - mgrs
+    - rbdmirrors
+    - nfss
+    - iscsigws
+    - monitoring
   become: true
   gather_facts: false
   tasks:
@@ -270,7 +270,7 @@
         CEPHADM_IMAGE: '{{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'
 
 - name: adjust service placement
-  hosts: "{{ mon_group_name|default('mons') }}[0]"
+  hosts: mons[0]
   become: true
   gather_facts: false
   tasks:
@@ -306,7 +306,7 @@
         CEPHADM_IMAGE: '{{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'
 
 - name: adjust monitoring service placement
-  hosts: "{{ monitoring_group_name|default('monitoring') }}"
+  hosts: monitoring
   become: true
   gather_facts: false
   tasks:
@@ -349,7 +349,7 @@
             CEPHADM_IMAGE: '{{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'
 
 - name: print information
-  hosts: "{{ mon_group_name|default('mons') }}[0]"
+  hosts: mons[0]
   become: true
   gather_facts: false
   tasks:

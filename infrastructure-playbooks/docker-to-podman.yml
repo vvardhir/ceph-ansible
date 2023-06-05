@@ -53,15 +53,15 @@
       when: delegate_facts_host | bool
 
 - hosts:
-    - "{{ mon_group_name | default('mons') }}"
-    - "{{ osd_group_name | default('osds') }}"
-    - "{{ mds_group_name | default('mdss') }}"
-    - "{{ rgw_group_name | default('rgws') }}"
-    - "{{ nfs_group_name | default('nfss') }}"
-    - "{{ mgr_group_name | default('mgrs') }}"
-    - "{{ iscsi_gw_group_name | default('iscsigws') }}"
-    - "{{ rbdmirror_group_name | default('rbdmirrors') }}"
-    - "{{ monitoring_group_name | default('monitoring') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - nfss
+    - mgrs
+    - iscsigws
+    - rbdmirrors
+    - monitoring
   gather_facts: false
   become: true
   tasks:

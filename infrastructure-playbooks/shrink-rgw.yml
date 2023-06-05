@@ -41,8 +41,8 @@
 
 - name: gather facts and mons and rgws
   hosts:
-    - "{{ mon_group_name | default('mons') }}[0]"
-    - "{{ rgw_group_name | default('rgws') }}"
+    - mons[0]
+    - rgws
   become: true
   gather_facts: false
   tasks:

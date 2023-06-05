@@ -49,16 +49,16 @@
 
 - name: gather facts and check the init system
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
-    - "{{ nfs_group_name|default('nfss') }}"
-    - "{{ client_group_name|default('clients') }}"
-    - "{{ iscsi_gw_group_name|default('iscsigws') }}"
-    - "{{ monitoring_group_name|default('monitoring') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - mgrs
+    - rbdmirrors
+    - nfss
+    - clients
+    - iscsigws
+    - monitoring
   tags: always
   any_errors_fatal: True
   become: True
@@ -143,7 +143,7 @@
     health_mon_check_retries: 5
     health_mon_check_delay: 15
     upgrade_ceph_packages: True
-  hosts: "{{ mon_group_name|default('mons') }}"
+  hosts: mons
   serial: 1
   become: True
   gather_facts: false
@@ -326,7 +326,7 @@
             msg: "There was an error during monitor upgrade. Please, check the previous task results."
 
 - name: reset mon_host
-  hosts: "{{ mon_group_name|default('mons') }}"
+  hosts: mons
   tags: always
   become: True
   gather_facts: false
@@ -344,7 +344,7 @@
     health_mon_check_retries: 5
     health_mon_check_delay: 15
     upgrade_ceph_packages: True
-  hosts: "{{ mon_group_name|default('mons') }}"
+  hosts: mons
   tags: mgrs
   serial: 1
   become: True
@@ -380,7 +380,7 @@
   vars:
     upgrade_ceph_packages: True
     ceph_release: "{{ ceph_stable_release }}"
-  hosts: "{{ mgr_group_name|default('mgrs') }}"
+  hosts: mgrs
   tags: mgrs
   serial: 1
   become: True
@@ -422,7 +422,7 @@
 
 
 - name: set osd flags
-  hosts: "{{ osd_group_name | default('osds') }}"
+  hosts: osds
   tags: osds
   become: True
   gather_facts: false
@@ -489,7 +489,7 @@
     health_osd_check_retries: 600
     health_osd_check_delay: 2
     upgrade_ceph_packages: True
-  hosts: "{{ osd_group_name|default('osds') }}"
+  hosts: osds
   tags: osds
   serial: 1
   become: True
@@ -565,7 +565,7 @@
 
 
 - name: complete osd upgrade
-  hosts: "{{ osd_group_name | default('osds') }}"
+  hosts: osds
   tags: osds
   become: True
   gather_facts: false
@@ -611,7 +611,7 @@
           when: (balancer_status_update.stdout | from_json)['active'] | bool
 
 - name: upgrade ceph mdss cluster, deactivate all rank > 0
-  hosts: "{{ mon_group_name | default('mons') }}[0]"
+  hosts: mons[0]
   tags: mdss
   become: true
   gather_facts: false
@@ -809,7 +809,7 @@
 - name: upgrade ceph rgws cluster
   vars:
     upgrade_ceph_packages: True
-  hosts: "{{ rgw_group_name|default('rgws') }}"
+  hosts: rgws
   tags: rgws
   serial: 1
   become: True
@@ -854,7 +854,7 @@
 - name: upgrade ceph rbd mirror node
   vars:
     upgrade_ceph_packages: True
-  hosts: "{{ rbdmirror_group_name|default('rbdmirrors') }}"
+  hosts: rbdmirrors
   tags: rbdmirrors
   serial: 1
   become: True
@@ -894,7 +894,7 @@
 - name: upgrade ceph nfs node
   vars:
     upgrade_ceph_packages: True
-  hosts: "{{ nfs_group_name|default('nfss') }}"
+  hosts: nfss
   tags: nfss
   serial: 1
   become: True
@@ -944,7 +944,7 @@
 - name: upgrade ceph iscsi gateway node
   vars:
     upgrade_ceph_packages: True
-  hosts: "{{ iscsi_gw_group_name|default('iscsigws') }}"
+  hosts: iscsigws
   tags: iscsigws
   serial: 1
   become: True
@@ -986,7 +986,7 @@
 - name: upgrade ceph client node
   vars:
     upgrade_ceph_packages: True
-  hosts: "{{ client_group_name|default('clients') }}"
+  hosts: clients
   tags: clients
   serial: "{{ client_update_batch | default(20) }}"
   become: True
@@ -1012,12 +1012,12 @@
 
 - name: upgrade ceph-crash daemons
   hosts:
-    - "{{ mon_group_name | default('mons') }}"
-    - "{{ osd_group_name | default('osds') }}"
-    - "{{ mds_group_name | default('mdss') }}"
-    - "{{ rgw_group_name | default('rgws') }}"
-    - "{{ rbdmirror_group_name | default('rbdmirrors') }}"
-    - "{{ mgr_group_name | default('mgrs') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - rbdmirrors
+    - mgrs
   tags:
     - post_upgrade
     - crash
@@ -1047,7 +1047,7 @@
         name: ceph-crash
 
 - name: complete upgrade
-  hosts: "{{ mon_group_name | default('mons') }}"
+  hosts: mons
   tags: post_upgrade
   become: True
   gather_facts: false
@@ -1076,15 +1076,15 @@
 
 - name: upgrade node-exporter
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
-    - "{{ nfs_group_name|default('nfss') }}"
-    - "{{ iscsi_gw_group_name|default('iscsigws') }}"
-    - "{{ monitoring_group_name|default('monitoring') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - mgrs
+    - rbdmirrors
+    - nfss
+    - iscsigws
+    - monitoring
   tags: monitoring
   gather_facts: false
   become: true
@@ -1115,7 +1115,7 @@
             name: ceph-node-exporter
 
 - name: upgrade monitoring node
-  hosts: "{{ monitoring_group_name|default('monitoring') }}"
+  hosts: monitoring
   tags: monitoring
   gather_facts: false
   become: true
@@ -1147,7 +1147,7 @@
             name: ceph-grafana
 
 - name: upgrade ceph dashboard
-  hosts: "{{ groups[mgr_group_name|default('mgrs')] | default(groups[mon_group_name|default('mons')]) | default(omit) }}"
+  hosts: "{{ groups['mgrs'] | default(groups['mons']) | default(omit) }}"
   tags: monitoring
   gather_facts: false
   become: true
@@ -1167,7 +1167,7 @@
             name: ceph-dashboard
 
 - name: switch any existing crush buckets to straw2
-  hosts: "{{ mon_group_name | default('mons') }}[0]"
+  hosts: mons[0]
   tags: post_upgrade
   become: true
   any_errors_fatal: true
@@ -1209,7 +1209,7 @@
         state: absent
 
 - name: show ceph status
-  hosts: "{{ mon_group_name|default('mons') }}"
+  hosts: mons
   tags: always
   become: True
   gather_facts: false

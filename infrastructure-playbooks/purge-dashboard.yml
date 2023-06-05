@@ -44,30 +44,30 @@
 
 - name: gather facts on all hosts
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
-    - "{{ nfs_group_name|default('nfss') }}"
-    - "{{ client_group_name|default('clients') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ monitoring_group_name | default('monitoring') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - rbdmirrors
+    - nfss
+    - clients
+    - mgrs
+    - monitoring
   become: true
   tasks:
     - debug: msg="gather facts on all Ceph hosts for following reference"
 
 - name: purge node exporter
   hosts:
-    - "{{ mon_group_name|default('mons') }}"
-    - "{{ osd_group_name|default('osds') }}"
-    - "{{ mds_group_name|default('mdss') }}"
-    - "{{ rgw_group_name|default('rgws') }}"
-    - "{{ rbdmirror_group_name|default('rbdmirrors') }}"
-    - "{{ nfs_group_name|default('nfss') }}"
-    - "{{ client_group_name|default('clients') }}"
-    - "{{ mgr_group_name|default('mgrs') }}"
-    - "{{ monitoring_group_name | default('monitoring') }}"
+    - mons
+    - osds
+    - mdss
+    - rgws
+    - rbdmirrors
+    - nfss
+    - clients
+    - mgrs
+    - monitoring
   gather_facts: false
   become: true
   tasks:
@@ -99,7 +99,7 @@
       failed_when: false
 
 - name: purge ceph monitoring
-  hosts: "{{ monitoring_group_name | default('monitoring') }}"
+  hosts: monitoring
   gather_facts: false
   become: true
   tasks:
@@ -163,7 +163,7 @@
         - /var/lib/grafana
 
 - name: purge ceph dashboard
-  hosts: "{{ groups[mgr_group_name] | default(groups[mon_group_name]) | default(omit) }}"
+  hosts: "{{ groups['mgrs'] | default(groups['mons']) | default(omit) }}"
   gather_facts: false
   become: true
   environment:
