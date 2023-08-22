@@ -17,4 +17,4 @@
   apt_repository:
     repo: "deb {{ ceph_stable_repo }} {{ ceph_stable_distro_source | default(ansible_facts['distribution_release']) }} main"
     state: present
-    update_cache: yes
+    update_cache: no

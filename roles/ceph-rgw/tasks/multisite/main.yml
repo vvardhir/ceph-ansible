@@ -34,6 +34,7 @@
 # Include the tasks depending on the zone type
 - name: include_tasks master.yml
   include_tasks: master.yml
+  when: rgw_zonemaster | bool
 
 - name: include_tasks secondary.yml
   include_tasks: secondary.yml
