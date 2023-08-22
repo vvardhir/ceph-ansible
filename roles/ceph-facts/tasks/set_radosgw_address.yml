@@ -63,14 +63,10 @@
 
 - name: set_fact rgw_instances without rgw multisite
   set_fact:
-    rgw_instances: "{{ rgw_instances|default([]) | union([{'instance_name': 'rgw' + item|string, 'radosgw_address': hostvars[ceph_dashboard_call_item | default(inventory_hostname)]['_radosgw_address'], 'radosgw_frontend_port': radosgw_frontend_port|int + item|int }]) }}"
+    rgw_instances: "{{ rgw_instances|default([]) | union([{'instance_name': 'rgw' + item|string, 'radosgw_address': _radosgw_address, 'radosgw_frontend_port': radosgw_frontend_port|int + item|int }]) }}"
   with_sequence: start=0 end={{ radosgw_num_instances|int - 1 }}
-  delegate_to: "{{ ceph_dashboard_call_item if ceph_dashboard_call_item is defined else inventory_hostname }}"
-  delegate_facts: "{{ true if ceph_dashboard_call_item is defined else false }}"
   when:
-    - ceph_dashboard_call_item is defined or
-      inventory_hostname in groups.get(rgw_group_name, [])
-    - not rgw_multisite | bool
+    - inventory_hostname in groups.get(rgw_group_name, [])
 
 - name: set_fact is_rgw_instances_defined
   set_fact:
